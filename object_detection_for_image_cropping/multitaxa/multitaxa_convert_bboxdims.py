@@ -1,5 +1,5 @@
 # Converting object detection bounding box coordinates to EOL crop format
-# Last modified 19 April 2020
+# Last modified 19 April 20
 
 import time
 start = time.time()
@@ -8,9 +8,12 @@ import numpy as np
 import pandas as pd
 import os
 
-# Read in crops file exported from aves_yolo.ipynb
-# TO DO: Update filepath
-crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Aves/aves_det_crops_1000.tsv', sep='\t', header=0)
+# Read in crop file exported from merge_tsvs.py (after export from multitaxa_train_tf_rcnns.ipynb)
+# TO DO: Read in and process crop data separately for each taxon
+crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Multitaxa/squamata_det_crops_20000.tsv', sep='\t', header=0)
+#crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Multitaxa/coleoptera_det_crops_20000.tsv', sep='\t', header=0)
+#crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Multitaxa/anura_det_crops_20000.tsv', sep='\t', header=0)
+#crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Multitaxa/carnivora_det_crops_20000.tsv', sep='\t', header=0)
 print(crops.head())
 
 # Correct for images with 1+ bounding boxes by making a 'super box' containing all small boxes per image
@@ -21,13 +24,15 @@ xmax_unq = pd.DataFrame(crops.groupby(['image_url'])['xmax'].max())
 ymax_unq = pd.DataFrame(crops.groupby(['image_url'])['ymax'].max())
 print(xmin_unq.head())
 
-# Workaround to get im_height and im_width in same format/order as 'super box' coords
+# Workaround to get im_height, im_width and class in same format/order as 'super box' coords
 # There is only one value for im_height and im_width, so taking max will return unchanged values
 im_height_unq = pd.DataFrame(crops.groupby(['image_url'])['im_height'].max())
 im_width_unq = pd.DataFrame(crops.groupby(['image_url'])['im_width'].max())
+taxon_unq = pd.DataFrame(crops.groupby(['image_url'])['class'].max())
 
 # Make a new dataframe with the unique values (ie. for only 1 bbox/image)
 crops_unq = im_height_unq.merge(im_width_unq, left_index=True, right_index=True)
+crops_unq = crops_unq.merge(taxon_unq, left_index=True, right_index=True)
 crops_unq = crops_unq.merge(xmin_unq, left_index=True, right_index=True)
 crops_unq = crops_unq.merge(ymin_unq, left_index=True, right_index=True)
 crops_unq = crops_unq.merge(xmax_unq, left_index=True, right_index=True)
@@ -45,8 +50,15 @@ crops_unq.reset_index(inplace=True)
 crops_unq.rename(columns={'image_url': 'eolMediaURL'}, inplace=True)
 
 ## Get dataObjectVersionIDs and identifiers from 1st 2 and 2nd to last cols of EOL breakdown file 
-bd = pd.read_csv('object_detection_for_image_cropping/data_files/input/Aves/images_for_Aves_breakdown_000001.txt', sep='\t', header=0)
-bd = bd.iloc[:, np.r_[0:2,-2]]
+# Combine EOL image bundles for all taxa
+pathbase = 'object_detection_for_image_cropping/data_files/input/Multitaxa/'
+tax1 = pathbase + 'images_for_Squamata_20K_breakdown_000001.txt'
+tax2 = pathbase + 'images_for_Coleoptera_20K_breakdown_000001.txt'
+tax3 = pathbase + 'images_for_Anura_20K_breakdown_000001.txt'
+tax4 = pathbase + 'images_for_Carnivora_20K_breakdown_000001.txt'
+all_filenames = [tax1, tax2, tax3, tax4]
+bd = pd.concat([pd.read_csv(f, sep='\t', header=0) for f in all_filenames], ignore_index=True, sort=False)
+bd = bd.iloc[:, np.r_[0:2,-3]]
 print(bd.head())
 
 ## Map dataObjectVersionIDs to crops_unq using identifiers as the index
@@ -55,14 +67,11 @@ bd.set_index('eolMediaURL', inplace=True, drop=True)
 df = crops_unq.merge(bd, left_index=True, right_index=True)
 print(df.head())
 
-# Exporting re-arranged crop coordinates before padding to display_test_bef_pad.tsv 
-# Load this file into crop_coords_display_test.ipynb and visualize results
-df.to_csv('object_detection_for_image_cropping/data_files/output/Aves/aves_crops_rcnn_1000img_display_test_bef_pad.tsv', sep='\t', index=True)
-
 # Convert bounding box/cropping dimensions to square, add padding, and make sure crop boxes aren't out of image bounds
 for i, row in df.iterrows():
-    # Pad by 2.5% larger crop dimension
-    pad = 0.025 * max(df.crop_height[i], df.crop_width[i])    
+    # Optional: Pad by xx% larger crop dimension (height)
+    # Note: 0% pad chosen for Coleoptera, Anura, Carnivora; X% for Squamata
+    pad = 0 * max(df.crop_height[i], df.crop_width[i])
     # Define variables for use filtering data through loops below
     crop_h0 = df.crop_height[i]
     crop_w0 = df.crop_width[i]
@@ -260,7 +269,11 @@ print(df.head())
 
 # Test that dimensions were modified appropriately for dataset by exporting crop coordinates to display_test.tsv 
 # Load this file into crop_coords_display_test.ipynb and visualize results
-df.to_csv('object_detection_for_image_cropping/data_files/output/Aves/aves_crops_rcnn_1000img_display_test.tsv', sep='\t', index=True)
+# TO DO: Export results separately for each taxon
+df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/squamata_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
+#df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/coleoptera_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
+#df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/anura_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
+#df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/carnivora_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
 
 # Get image and cropping dimensions in EOL format (concatenated string with labels)
 # {"height":"423","width":"640","crop_x":123.712,"crop_y":53.4249,"crop_width":352,"crop_height":0}
@@ -271,12 +284,16 @@ for i, row in df.iterrows():
 df.reset_index(inplace=True)
 print(df.head())
 
-# Create EOL crops formatted dataframe from cols: identifier, dataobjectversionid, eolmediaurl, and crop_dimensions
+# Create EOL crops formatted dataframe from cols: identifier, dataobjectversionid, eolmediaurl, crop_dimensions, and class
 eol_crops = pd.DataFrame(df.iloc[:,np.r_[-3,-2,0,-1]])
 print(eol_crops.head())
 
 # Write results to tsv formmatted to EOL crop coordinate standards
-eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Aves/aves_crops_rcnn_1000img.tsv', sep='\t', index=False)
+# TO DO: Export results separately for each taxon
+eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/squamata_crops_rcnn_20000img.tsv', sep='\t', index=False)
+#eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/coleoptera_crops_rcnn_20000img.tsv', sep='\t', index=False)
+#eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/anura_crops_rcnn_20000img.tsv', sep='\t', index=False)
+#eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/carivora_crops_rcnn_20000img.tsv', sep='\t', index=False)
 
 # Print time to run script
 print ('Run time: {} seconds'.format(format(time.time()- start, '.2f')))
