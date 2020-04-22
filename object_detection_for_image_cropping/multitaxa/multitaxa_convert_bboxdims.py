@@ -1,5 +1,7 @@
 # Converting object detection bounding box coordinates to EOL crop format
-# Last modified 19 April 20
+# Last modified 20 April 20
+
+# Find "TO DO"s and comment/uncomment out for taxon being used 
 
 import time
 start = time.time()
@@ -47,7 +49,7 @@ print(crops_unq.head())
 # Get EOL identifiers from eolMediaURLs
 ## Change 1st col from index to normal data column
 crops_unq.reset_index(inplace=True)
-crops_unq.rename(columns={'image_url': 'eolMediaURL'}, inplace=True)
+crops_unq.rename(columns={'image_url': 'eolMediaURL', 'class':'taxon'}, inplace=True)
 
 ## Get dataObjectVersionIDs and identifiers from 1st 2 and 2nd to last cols of EOL breakdown file 
 # Combine EOL image bundles for all taxa
@@ -70,7 +72,7 @@ print(df.head())
 # Convert bounding box/cropping dimensions to square, add padding, and make sure crop boxes aren't out of image bounds
 for i, row in df.iterrows():
     # Optional: Pad by xx% larger crop dimension (height)
-    # Note: 0% pad chosen for Coleoptera, Anura, Carnivora; X% for Squamata
+    # Note: 0% pad chosen for Coleoptera, Anura, Carnivora, Squamata
     pad = 0 * max(df.crop_height[i], df.crop_width[i])
     # Define variables for use filtering data through loops below
     crop_h0 = df.crop_height[i]
@@ -113,7 +115,7 @@ for i, row in df.iterrows():
         # Where padded crop height is not within image dimensions, but un-padded is
         elif (crop_h0 + 2*pad) > min(im_h, im_w) and \
         crop_h0 <= min(im_h, im_w):
-            # Make new crop dimensions square by setting crop height equal to crop width
+            # Make new crop dimensions square by setting crop height equal to smaller image dimension
             df.crop_height[i] = crop_h1 = min(im_h, im_w)
             df.crop_width[i] = crop_w1 = df.crop_height[i]   
             # Center cropping coordinates
@@ -132,11 +134,11 @@ for i, row in df.iterrows():
         elif crop_h0 > min(im_h, im_w) and \
             (crop_w0 + 2*pad) > min(im_h, im_w) and \
             crop_w0 <= min(im_h, im_w):    
-            # Make new crop dimensions square by setting crop height equal to image width
+            # Make new crop dimensions square by setting crop height equal to smaller image dimension
             df.crop_width[i] = crop_w1 = min(im_h, im_w)
             df.crop_height[i] = crop_h1 = df.crop_width[i]  
-            # Center crop dimensions (note that min(im_w, im_h) is cancelled out b/c was + and - to get new ymin) 
-            df.ymin[i] = ymin0 + 0.5*(crop_h0 - crop_w0 - pad)     
+            # Center crop dimensions 
+            df.ymin[i] = ymin0 + 0.5*(crop_h0 - crop_w1)     
             df.xmin[i] = 0          
         # Where crop height is greater than width, but neither is within than image dimensions
         elif min(crop_h0, crop_w0) > min(im_h, im_w):
@@ -177,12 +179,12 @@ for i, row in df.iterrows():
         # Where padded crop width is not within image dimensions, but un-padded is
         elif (crop_w0 + 2*pad) > min(im_h, im_w) and \
         crop_w0 <= min(im_h, im_w):    
-            # Make new crop dimensions square by setting crop height equal to image width
+            # Make new crop dimensions square by setting crop height equal to smaller image dimension
             df.crop_width[i] = crop_w1 = min(im_h, im_w)
             df.crop_height[i] = crop_h1 = df.crop_width[i]
             # Center cropping coordinates
             df.ymin[i] = ymin0 - 0.5*(min(im_h, im_w) - crop_h0)
-            df.ymin[i] = 0
+            df.xmin[i] = 0
         # Where crop width is not within image dimensions, but padded crop height is
         elif crop_w0 > min(im_h, im_w) and \
         (crop_h0 + 2*pad) <= min(im_h, im_w):           
@@ -196,11 +198,11 @@ for i, row in df.iterrows():
         elif crop_w0 > min(im_h, im_w) and \
         (crop_h0 + 2*pad) > min(im_h, im_w) and \
         crop_h0 <= min(im_h, im_w):           
-            # Make new crop dimensions square by setting crop height equal to image width
+            # Make new crop dimensions square by setting crop height equal to smaller image dimension
             df.crop_height[i] = crop_h1 = min(im_h, im_w)
             df.crop_width[i] = crop_w1 = df.crop_height[i] 
             # Center crop dimensions
-            df.xmin[i] = xmin0 + 0.5*(crop_w0 - crop_h0 - pad)
+            df.xmin[i] = xmin0 + 0.5*(crop_w0 - crop_h1)
             df.ymin[i] = 0
         # Where crop width is greater than height, but neither is within than image dimensions
         elif min(crop_w0, crop_h0) > min(im_h, im_w):
@@ -269,11 +271,22 @@ print(df.head())
 
 # Test that dimensions were modified appropriately for dataset by exporting crop coordinates to display_test.tsv 
 # Load this file into crop_coords_display_test.ipynb and visualize results
-# TO DO: Export results separately for each taxon
+# TO DO: Export results separately for each taxon (and include all detections)
 df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/squamata_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
 #df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/coleoptera_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
 #df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/anura_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
 #df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/carnivora_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
+
+# Optional: Export false detection results to use for training general object detector
+# TO DO: Export separately for each taxon
+#false_det = df[df.taxon!='Squamata']
+#false_det.to_csv('squamata_false_det.tsv', sep='\t', index=False)
+#false_det = df[df.taxon!='Coleoptera']
+#false_det.to_csv('coleoptera_false_det.tsv', sep='\t', index=False)
+#false_det = df[df.taxon!='Anura']
+#false_det.to_csv('anura_false_det.tsv', sep='\t', index=False)
+#false_det = df[df.taxon!='Carnivora']
+#false_det.to_csv('carnivora_false_det.tsv', sep='\t', index=False)
 
 # Get image and cropping dimensions in EOL format (concatenated string with labels)
 # {"height":"423","width":"640","crop_x":123.712,"crop_y":53.4249,"crop_width":352,"crop_height":0}
@@ -285,15 +298,19 @@ df.reset_index(inplace=True)
 print(df.head())
 
 # Create EOL crops formatted dataframe from cols: identifier, dataobjectversionid, eolmediaurl, crop_dimensions, and class
-eol_crops = pd.DataFrame(df.iloc[:,np.r_[-3,-2,0,-1]])
+eol_crops = pd.DataFrame(df.iloc[:,np.r_[-3,-2,0,-1,3]])
 print(eol_crops.head())
 
 # Write results to tsv formmatted to EOL crop coordinate standards
-# TO DO: Export results separately for each taxon
-eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/squamata_crops_rcnn_20000img.tsv', sep='\t', index=False)
-#eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/coleoptera_crops_rcnn_20000img.tsv', sep='\t', index=False)
-#eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/anura_crops_rcnn_20000img.tsv', sep='\t', index=False)
-#eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/carivora_crops_rcnn_20000img.tsv', sep='\t', index=False)
+# TO DO: Export true detection results separately for each taxon
+true_det = eol_crops[eol_crops.taxon=='Squamata']
+true_det.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/squamata_crops_rcnn_i_20000img.tsv', columns = eol_crops.iloc[:,:-1], sep='\t', index=False)
+#true_det = eol_crops[eol_crops.taxon=='Coleoptera']
+#true_det.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/coleoptera_crops_rcnn_i_20000img.tsv', columns = eol_crops.iloc[:,:-1], sep='\t', index=False)
+#true_det = eol_crops[eol_crops.taxon=='Anura']
+#true_det.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/anura_crops_rcnn_i_20000img.tsv', columns = eol_crops.iloc[:,:-1], sep='\t', index=False)
+#true_det = eol_crops[eol_crops.taxon=='Carnivora']
+#true_det.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/carivora_crops_rcnn_i_20000img.tsv', columns = eol_crops.iloc[:,:-1], sep='\t', index=False)
 
 # Print time to run script
 print ('Run time: {} seconds'.format(format(time.time()- start, '.2f')))
