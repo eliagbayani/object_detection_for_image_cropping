@@ -1,5 +1,5 @@
 # Converting object detection bounding box coordinates to EOL crop format
-# Last modified 22 March 2020
+# Last modified 22 March 20
 
 import time
 start = time.time()
@@ -8,8 +8,27 @@ import numpy as np
 import pandas as pd
 import os
 
-# Read in crops file exported from aves_yolo.ipynb
-crops = pd.read_csv('../../object_detection_for_image_cropping/data_files/input/Aves/aves_det_crops_1000.tsv', sep='\t', header=0)
+#================================================= start
+import sys
+# run command-line:
+# python3 chiroptera_convert_bboxdims_ELI.py 1
+
+print ('Number of arguments:', len(sys.argv), 'arguments.')
+print ('Argument List:', str(sys.argv))
+eli = sys.argv
+# print('1st arg:', eli[0])
+# print('2nd arg:', eli[1])
+num = int(eli[1])
+num_str = str(num).zfill(2)
+print('Number is:', num, ' - ', num_str)
+#================================================= end
+
+
+# Read in sample crops file exported from object_detection_for_image_cropping_yolo.ipynb
+# crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Chiroptera/chiroptera_det_crops_1000.tsv', sep='\t', header=0)
+
+crops = pd.read_csv('../data_files/input/Chiroptera/final/chiroptera_det_crops_20K_'+num_str+'.tsv', sep='\t', header=0)
+
 print(crops.head())
 
 # Correct for images with 1+ bounding boxes by making a 'super box' containing all small boxes per image
@@ -44,7 +63,10 @@ crops_unq.reset_index(inplace=True)
 crops_unq.rename(columns={'image_url': 'eolMediaURL'}, inplace=True)
 
 ## Get dataObjectVersionIDs and identifiers from 1st 2 and 2nd to last cols of EOL breakdown file 
-bd = pd.read_csv('../../object_detection_for_image_cropping/data_files/input/Aves/images_for_Aves_breakdown_000001.txt', sep='\t', header=0)
+# bd = pd.read_csv('object_detection_for_image_cropping/data_files/input/Chiroptera/images_for_Chiroptera_breakdown_000001.txt', sep='\t', header=0)
+
+bd = pd.read_csv('../data_files/input/Chiroptera/editors_eol_org/images_for_Chiroptera_20K_breakdown_0000'+num_str+'.txt', sep='\t', header=0)
+
 bd = bd.iloc[:, np.r_[0:2,-2]]
 print(bd.head())
 
@@ -54,14 +76,10 @@ bd.set_index('eolMediaURL', inplace=True, drop=True)
 df = crops_unq.merge(bd, left_index=True, right_index=True)
 print(df.head())
 
-# Exporting re-arranged crop coordinates before padding to display_test_bef_pad.tsv 
-# Load this file into crop_coords_display_test.ipynb and visualize results
-df.to_csv('../../object_detection_for_image_cropping/data_files/output/Aves/aves_crops_rcnn_1000img_display_test_bef_pad.tsv', sep='\t', index=True)
-
 # Convert bounding box/cropping dimensions to square, add padding, and make sure crop boxes aren't out of image bounds
 for i, row in df.iterrows():
-    # Pad by 5% larger crop dimension (height)
-    pad = 0.05 * max(df.crop_height[i], df.crop_width[i])
+    # Optional: Pad by xx% larger crop dimension (height)
+    pad = 0 * max(df.crop_height[i], df.crop_width[i])
     df.ymin[i] = df.ymin[i] - pad
     df.xmin[i] = df.xmin[i] - pad
     # Assign crop height and width values for use filtering data through loops below
@@ -196,7 +214,9 @@ print(df.head())
 
 # Test that dimensions were modified appropriately for dataset by exporting crop coordinates to display_test.tsv 
 # Load this file into crop_coords_display_test.ipynb and visualize results
-df.to_csv('../../object_detection_for_image_cropping/data_files/output/Aves/aves_crops_rcnn_1000img_display_test.tsv', sep='\t', index=True)
+#df.to_csv('object_detection_for_image_cropping/data_files/output/Chiroptera/chiroptera_crops_rcnn_20000img_display_test.tsv', sep='\t', index=True)
+df.to_csv('../data_files/output/Chiroptera/display_test/chiroptera_crops_rcnn_20000img_display_test_'+num_str+'.tsv', sep='\t', index=True)
+
 
 # Get image and cropping dimensions in EOL format (concatenated string with labels)
 # {"height":"423","width":"640","crop_x":123.712,"crop_y":53.4249,"crop_width":352,"crop_height":0}
@@ -212,7 +232,10 @@ eol_crops = pd.DataFrame(df.iloc[:,np.r_[-3,-2,0,-1]])
 print(eol_crops.head())
 
 # Write results to tsv formmatted to EOL crop coordinate standards
-eol_crops.to_csv('../../object_detection_for_image_cropping/data_files/output/Aves/aves_crops_rcnn_1000img.tsv', sep='\t', index=False)
+# eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Chiroptera/chiroptera_crops_rcnn_20000img.tsv', sep='\t', index=False)
+
+eol_crops.to_csv('../data_files/output/Chiroptera/crops/chiroptera_crops_rcnn_20000img_'+num_str+'.tsv', sep='\t', index=False)
+
 
 # Print time to run script
 print ('Run time: {} seconds'.format(format(time.time()- start, '.2f')))
