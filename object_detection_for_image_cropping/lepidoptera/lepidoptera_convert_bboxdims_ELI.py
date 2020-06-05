@@ -26,8 +26,8 @@ print('Number is:', num, ' - ', num_str)
 #================================================= end
 
 # Read in sample crops file exported from object_detection_for_image_cropping_yolo.ipynb
-# crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Lepidoptera/lepidoptera_det_crops_20000.tsv', sep='\t', header=0)
-crops = pd.read_csv('../data_files/input/Lepidoptera/final/lepidoptera_det_crops_20K_'+num_str+'.tsv', sep='\t', header=0)
+# crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Lepidoptera/lepidoptera_det_crops_20000.tsv', sep='\t', header=0) #orig
+crops = pd.read_csv('../data_files/input/Lepidoptera/final/lepidoptera_det_crops_20K_'+num_str+'.tsv', sep='\t', header=0) #Eli
 print(crops.head())
 
 # Correct for images with 1+ bounding boxes by making a 'super box' containing all small boxes per image
@@ -62,11 +62,8 @@ crops_unq.reset_index(inplace=True)
 crops_unq.rename(columns={'image_url': 'eolMediaURL'}, inplace=True)
 
 ## Get dataObjectVersionIDs and identifiers from 1st 2 and 2nd to last cols of EOL breakdown file 
-
-# bd = pd.read_csv('object_detection_for_image_cropping/data_files/input/Lepidoptera/images_for_Lepidoptera_20K_breakdown_000001.txt', sep='\t', header=0)
-
-bd = pd.read_csv('../data_files/input/Lepidoptera/editors_eol_org/images_for_Lepidoptera_20K_breakdown_0000'+num_str+'.txt', sep='\t', header=0)
-
+# bd = pd.read_csv('object_detection_for_image_cropping/data_files/input/Lepidoptera/images_for_Lepidoptera_20K_breakdown_000001.txt', sep='\t', header=0) #orig
+bd = pd.read_csv('../data_files/input/Lepidoptera/editors_eol_org/images_for_Lepidoptera_20K_breakdown_0000'+num_str+'.txt', sep='\t', header=0) #Eli
 bd = bd.iloc[:, np.r_[0:2,-2]]
 print(bd.head())
 
@@ -278,8 +275,8 @@ print(df.head())
 # Test that dimensions were modified appropriately for dataset by exporting crop coordinates to display_test.tsv 
 # Load this file into crop_coords_display_test.ipynb and visualize results
 
-# df.to_csv('object_detection_for_image_cropping/data_files/output/Lepidoptera/lepidoptera_crops_rcnn_20000img_display_test.tsv', sep='\t', index=True)
-df.to_csv('../data_files/output/Lepidoptera/display_test/lepidoptera_crops_rcnn_20000img_display_test_'+num_str+'.tsv', sep='\t', index=True)
+# df.to_csv('object_detection_for_image_cropping/data_files/output/Lepidoptera/lepidoptera_crops_rcnn_20000img_display_test.tsv', sep='\t', index=True) #orig
+df.to_csv('../data_files/output/Lepidoptera/display_test/lepidoptera_crops_rcnn_20000img_display_test_'+num_str+'.tsv', sep='\t', index=True) #Eli
 
 # Get image and cropping dimensions in EOL format (concatenated string with labels)
 # {"height":"423","width":"640","crop_x":123.712,"crop_y":53.4249,"crop_width":352,"crop_height":0}
@@ -295,11 +292,8 @@ eol_crops = pd.DataFrame(df.iloc[:,np.r_[-3,-2,0,-1]])
 print(eol_crops.head())
 
 # Write results to tsv formmatted to EOL crop coordinate standards
-
-# eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Lepidoptera/lepidoptera_crops_rcnn_20000img.tsv', sep='\t', index=False)
-
-eol_crops.to_csv('../data_files/output/Lepidoptera/crops/lepidoptera_crops_rcnn_20000img_'+num_str+'.tsv', sep='\t', index=False)
-
+# eol_crops.to_csv('object_detection_for_image_cropping/data_files/output/Lepidoptera/lepidoptera_crops_rcnn_20000img.tsv', sep='\t', index=False) #orig
+eol_crops.to_csv('../data_files/output/Lepidoptera/crops/lepidoptera_crops_rcnn_20000img_'+num_str+'.tsv', sep='\t', index=False) #Eli
 
 # Print time to run script
 print ('Run time: {} seconds'.format(format(time.time()- start, '.2f')))
