@@ -26,11 +26,8 @@ print('Number is:', num, ' - ', num_str)
 #================================================= end
 
 # Read in sample crops file exported from object_detection_for_image_cropping_yolo.ipynb
-
 # crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Lepidoptera/lepidoptera_det_crops_20000.tsv', sep='\t', header=0)
-
 crops = pd.read_csv('../data_files/input/Lepidoptera/final/lepidoptera_det_crops_20K_'+num_str+'.tsv', sep='\t', header=0)
-
 print(crops.head())
 
 # Correct for images with 1+ bounding boxes by making a 'super box' containing all small boxes per image
