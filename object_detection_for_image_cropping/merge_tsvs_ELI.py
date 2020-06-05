@@ -11,6 +11,10 @@ import pandas as pd
 
 # python3 merge_tsvs_ELI.py 1 Chiroptera
 
+# python3 merge_tsvs_ELI.py 1 Aves
+# python3 merge_tsvs_ELI.py 2 Aves
+# python3 merge_tsvs_ELI.py 21 Aves
+
 
 print ('Number of arguments:', len(sys.argv), 'arguments.')
 print ('Argument List:', str(sys.argv))
@@ -29,13 +33,62 @@ print('Taxon is:', taxon)
 
 # all_filenames = ["data_files/input/Lepidoptera/collab/temp1/lepidoptera_det_crops_20000_a.tsv",
 #                  "data_files/input/Lepidoptera/collab/temp1/lepidoptera_det_crops_20000_b.tsv"]
-
+#=======================================================================================================================================================
 if taxon == 'Chiroptera':
     if num == 1:
         all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv",
                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_c.tsv"]
-
+#=======================================================================================================================================================
+if taxon == 'Aves':
+    if num == 1:
+        all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_c.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_d.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_e.tsv"]
+    elif num == 2:
+        all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_c.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_d.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_e.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_f.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_g.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_h.tsv"]
+    elif num == 3 or num == 13:
+        all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                         "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv"]
+    elif num == 4:
+         all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_c.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_d.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_e.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_f.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_g.tsv"]
+    elif num >= 5 and num <= 11:
+         all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv"]
+    elif num == 12:
+         all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_c.tsv"]
+    elif num == 14 or num == 17:
+         all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_c.tsv"]
+    elif num >= 15 and num <= 16:
+         all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv"]
+    elif num >= 18 and num <= 20:
+         all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                          "data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv"]
+    elif num == 21:
+         all_filenames = ["data_files/input/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv"]
+    else:
+         print("Will not go here...")
+#=======================================================================================================================================================
 if taxon == 'Lepidoptera':
     if num >= 1 and num <= 2:
         all_filenames = ["data_files/input/Lepidoptera/collab/temp" + str(num) + "/lepidoptera_det_crops_20000_a.tsv",
@@ -64,6 +117,7 @@ if taxon == 'Lepidoptera':
                          "data_files/input/Lepidoptera/collab/temp" + str(num) + "/lepidoptera_det_crops_20000_b.tsv"]
     else:
         print("Will not go here...")
+#=======================================================================================================================================================
 
 
 # Combine all files in the list
