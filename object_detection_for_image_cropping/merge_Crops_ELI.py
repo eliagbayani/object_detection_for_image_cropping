@@ -20,7 +20,7 @@ print('Taxon is:', taxon)
 #==========================================================================================================================
 if taxon == 'Lepidoptera':
     limit = 31
-if taxon == 'Aves':
+elif taxon == 'Aves':
     limit = 21
 else:
     print("Will not go here...")
