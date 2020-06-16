@@ -5,16 +5,17 @@ import sys
 import pandas as pd
 
 # run command-line:
+# 1-31 Lepidoptera
 # python3 merge_tsvs_ELI.py 1 Lepidoptera
-# python3 merge_tsvs_ELI.py 2 Lepidoptera
-# python3 merge_tsvs_ELI.py 31 Lepidoptera
 
+# 1 only Chiroptera
 # python3 merge_tsvs_ELI.py 1 Chiroptera
 
+# 1 - 21 Aves
 # python3 merge_tsvs_ELI.py 1 Aves
-# python3 merge_tsvs_ELI.py 2 Aves
-# python3 merge_tsvs_ELI.py 21 Aves
 
+# 1 - 8 Squamata
+# python3 merge_tsvs_ELI.py 1 Squamata
 
 print ('Number of arguments:', len(sys.argv), 'arguments.')
 print ('Argument List:', str(sys.argv))
@@ -33,6 +34,10 @@ print('Taxon is:', taxon)
 
 # all_filenames = ["data_files/input/Lepidoptera/collab/temp1/lepidoptera_det_crops_20000_a.tsv",
 #                  "data_files/input/Lepidoptera/collab/temp1/lepidoptera_det_crops_20000_b.tsv"]
+#=======================================================================================================================================================
+if taxon == 'Squamata':
+    if num == 1:
+        all_filenames = ["data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv"]
 #=======================================================================================================================================================
 if taxon == 'Chiroptera':
     if num == 1:
@@ -126,7 +131,11 @@ combined_csv = pd.concat([pd.read_csv(f, sep='\t', header=0) for f in all_filena
 # Export to csv
 # combined_csv.to_csv( "chiroptera_det_crops_20000.tsv", index=False, sep='\t')
 
-combined_csv.to_csv( "data_files/input/"+taxon+"/final/"+taxon.lower()+"_det_crops_20K_" + num_str + ".tsv", index=False, sep='\t')
+listOfNotMultiTaxa = ["Aves", "Chiroptera", "Lepidoptera"]
+if taxon in listOfNotMultiTaxa :
+    combined_csv.to_csv( "data_files/input/"+taxon+"/final/"+taxon.lower()+"_det_crops_20K_" + num_str + ".tsv", index=False, sep='\t')
+else:
+    combined_csv.to_csv( "data_files/input/Multitaxa/"+taxon+"/final/"+taxon.lower()+"_det_crops_20K_" + num_str + ".tsv", index=False, sep='\t')
 
 # combined_csv.to_csv( "data_files/input/Lepidoptera/final/lepidoptera_det_crops_20000_01.tsv", index=False, sep='\t')
 # combined_csv.to_csv( "data_files/input/Lepidoptera/final/lepidoptera_det_crops_20000_02.tsv", index=False, sep='\t')

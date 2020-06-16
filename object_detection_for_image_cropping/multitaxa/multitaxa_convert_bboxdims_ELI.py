@@ -10,9 +10,36 @@ import numpy as np
 import pandas as pd
 import os
 
+#================================================= start
+import sys
+# Squamata    1-8
+# Coleoptera  1-9
+# Anura       1-4
+# Carnivora   1-3
+
+# run command-line:
+# python3 multitaxa_convert_bboxdims_ELI.py 1 Squamata
+# python3 multitaxa_convert_bboxdims_ELI.py 2 Squamata
+# python3 multitaxa_convert_bboxdims_ELI.py 8 Squamata
+
+
+
+print ('Number of arguments:', len(sys.argv), 'arguments.')
+print ('Argument List:', str(sys.argv))
+params = sys.argv
+# print('1st arg:', params[0])
+# print('2nd arg:', params[1])
+num = int(params[1])
+num_str = str(num).zfill(2)
+taxon_var = params[2]
+print('Number is:', num, ' - ', num_str)
+print('Taxon is:', taxon_var)
+#================================================= end
+
 # Read in crop file exported from merge_tsvs.py (after export from multitaxa_train_tf_rcnns.ipynb)
 # TO DO: Read in and process crop data separately for each taxon
-crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Multitaxa/squamata_det_crops_20000.tsv', sep='\t', header=0)
+#crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Multitaxa/squamata_det_crops_20000.tsv', sep='\t', header=0) #orig
+crops = pd.read_csv('../data_files/input/Multitaxa/'+taxon_var+'/final/'+taxon_var.lower()+'_det_crops_20K_'+num_str+'.tsv', sep='\t', header=0) #Eli
 #crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Multitaxa/coleoptera_det_crops_20000.tsv', sep='\t', header=0)
 #crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Multitaxa/anura_det_crops_20000.tsv', sep='\t', header=0)
 #crops = pd.read_csv('object_detection_for_image_cropping/data_files/input/Multitaxa/carnivora_det_crops_20000.tsv', sep='\t', header=0)
@@ -53,10 +80,19 @@ crops_unq.rename(columns={'image_url': 'eolMediaURL', 'class':'taxon'}, inplace=
 
 ## Get dataObjectVersionIDs and identifiers from 1st 2 and 2nd to last cols of EOL breakdown file 
 # Combine EOL image bundles for all taxa
-pathbase = 'object_detection_for_image_cropping/data_files/input/Multitaxa/'
+# pathbase = 'object_detection_for_image_cropping/data_files/input/Multitaxa/' #orig
+# tax1 = pathbase + 'images_for_Squamata_20K_breakdown_000001.txt' #orig
+# tax2 = pathbase + 'images_for_Coleoptera_20K_breakdown_000001.txt' #orig
+# tax3 = pathbase + 'images_for_Anura_20K_breakdown_000001.txt' #orig
+# tax4 = pathbase + 'images_for_Carnivora_20K_breakdown_000001.txt' #orig
+
+pathbase = '../data_files/input/Multitaxa/Squamata/editors_eol_org/' #Eli
 tax1 = pathbase + 'images_for_Squamata_20K_breakdown_000001.txt'
+pathbase = '../data_files/input/Multitaxa/Coleoptera/editors_eol_org/' #Eli
 tax2 = pathbase + 'images_for_Coleoptera_20K_breakdown_000001.txt'
+pathbase = '../data_files/input/Multitaxa/Anura/editors_eol_org/' #Eli
 tax3 = pathbase + 'images_for_Anura_20K_breakdown_000001.txt'
+pathbase = '../data_files/input/Multitaxa/Carnivora/editors_eol_org/' #Eli
 tax4 = pathbase + 'images_for_Carnivora_20K_breakdown_000001.txt'
 all_filenames = [tax1, tax2, tax3, tax4]
 bd = pd.concat([pd.read_csv(f, sep='\t', header=0) for f in all_filenames], ignore_index=True, sort=False)
@@ -272,7 +308,8 @@ print(df.head())
 # Test that dimensions were modified appropriately for dataset by exporting crop coordinates to display_test.tsv 
 # Load this file into crop_coords_display_test.ipynb and visualize results
 # TO DO: Export results separately for each taxon (and include all detections)
-df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/squamata_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
+# df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/squamata_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True) #orig
+df.to_csv('../data_files/output/Multitaxa/'+taxon_var+'/display_test/'+taxon_var.lower()+'_crops_rcnn_i_20000img_display_test_'+num_str+'.tsv', sep='\t', index=True) #Eli
 #df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/coleoptera_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
 #df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/anura_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
 #df.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/carnivora_crops_rcnn_i_20000img_display_test.tsv', sep='\t', index=True)
@@ -303,8 +340,12 @@ print(eol_crops.head())
 
 # Write results to tsv formmatted to EOL crop coordinate standards
 # TO DO: Export true detection results separately for each taxon
-true_det = eol_crops[eol_crops.taxon=='Squamata']
-true_det.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/squamata_crops_rcnn_i_20000img.tsv', columns = eol_crops.iloc[:,:-1], sep='\t', index=False)
+
+# true_det = eol_crops[eol_crops.taxon=='Squamata'] #orig
+# true_det.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/squamata_crops_rcnn_i_20000img.tsv', columns = eol_crops.iloc[:,:-1], sep='\t', index=False) #orig
+true_det = eol_crops[eol_crops.taxon==taxon_var] #Eli
+true_det.to_csv('../data_files/output/Multitaxa/'+taxon_var+'/crops/'+taxon_var.lower()+'_crops_rcnn_i_20000img_'+num_str+'.tsv', sep='\t', index=False) #Eli
+
 #true_det = eol_crops[eol_crops.taxon=='Coleoptera']
 #true_det.to_csv('object_detection_for_image_cropping/data_files/output/Multitaxa/coleoptera_crops_rcnn_i_20000img.tsv', columns = eol_crops.iloc[:,:-1], sep='\t', index=False)
 #true_det = eol_crops[eol_crops.taxon=='Anura']

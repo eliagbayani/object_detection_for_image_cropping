@@ -17,10 +17,10 @@ import sys
 
 print ('Number of arguments:', len(sys.argv), 'arguments.')
 print ('Argument List:', str(sys.argv))
-eli = sys.argv
-# print('1st arg:', eli[0])
-# print('2nd arg:', eli[1])
-num = int(eli[1])
+params = sys.argv
+# print('1st arg:', params[0])
+# print('2nd arg:', params[1])
+num = int(params[1])
 num_str = str(num).zfill(2)
 print('Number is:', num, ' - ', num_str)
 #================================================= end
