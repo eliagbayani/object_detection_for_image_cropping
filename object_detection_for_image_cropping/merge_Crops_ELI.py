@@ -14,7 +14,7 @@ eli = sys.argv
 # print('2nd arg:', eli[1])
 taxon = eli[1]
 print('Taxon is:', taxon)
-
+listOfNotMultiTaxa = ["Aves", "Chiroptera", "Lepidoptera"]
 
 # File names to be combined
 #==========================================================================================================================
@@ -32,15 +32,20 @@ while i <= limit:
     # print(num_str)
     # all_filenames.append("data_files/output/Lepidoptera/crops/lepidoptera_crops_rcnn_20000img_" + num_str + ".tsv") #lepidoptera_crops_rcnn_20000img_01.tsv
                                                                                                                       #       aves_crops_rcnn_20000img_01.tsv
-    all_filenames.append("data_files/output/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_20000img_" + num_str + ".tsv") 
+    if taxon in listOfNotMultiTaxa :
+        all_filenames.append("data_files/output/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_20000img_" + num_str + ".tsv")
+    else:
+        all_filenames.append("data_files/output/Multitaxa/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_20000img_" + num_str + ".tsv")
     i += 1
 print(all_filenames)
-
-
 #==========================================================================================================================
 
 # Combine all files in the list
 combined_csv = pd.concat([pd.read_csv(f, sep='\t', header=0) for f in all_filenames])
 
 # Export to csv
-combined_csv.to_csv( "data_files/output/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_img.tsv", index=False, sep='\t')
+
+if taxon in listOfNotMultiTaxa :
+    combined_csv.to_csv( "data_files/output/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_img.tsv", index=False, sep='\t')
+else:
+    combined_csv.to_csv( "data_files/output/Multitaxa/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_img.tsv", index=False, sep='\t')
