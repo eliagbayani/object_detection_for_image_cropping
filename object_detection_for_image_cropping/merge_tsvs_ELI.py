@@ -36,7 +36,10 @@ print('Taxon is:', taxon)
 #                  "data_files/input/Lepidoptera/collab/temp1/lepidoptera_det_crops_20000_b.tsv"]
 #=======================================================================================================================================================
 if taxon == 'Squamata':
-    if num == 1:
+    if num == 3 or num == 5 or num == 6:
+        all_filenames = ["data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                         "data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv"]
+    else:
         all_filenames = ["data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv"]
 #=======================================================================================================================================================
 if taxon == 'Chiroptera':
