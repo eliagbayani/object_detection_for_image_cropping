@@ -4,8 +4,13 @@ import sys
 import pandas as pd
 
 # run command-line:
-# python3 merge_Crops_ELI.py Lepidoptera
-# python3 merge_Crops_ELI.py Aves
+# python3 merge_Crops_ELI.py Lepidoptera 31
+# python3 merge_Crops_ELI.py Aves 21
+## Multitaxa batch:
+# python3 merge_Crops_ELI.py Squamata 8
+# python3 merge_Crops_ELI.py Coleoptera 9
+# python3 merge_Crops_ELI.py Carnivora 3
+# python3 merge_Crops_ELI.py Anura 4
 
 print ('Number of arguments:', len(sys.argv), 'arguments.')
 print ('Argument List:', str(sys.argv))
@@ -13,17 +18,20 @@ eli = sys.argv
 # print('1st arg:', eli[0])
 # print('2nd arg:', eli[1])
 taxon = eli[1]
+limit = eli[2]
 print('Taxon is:', taxon)
+print('Limit count is:', limit)
 listOfNotMultiTaxa = ["Aves", "Chiroptera", "Lepidoptera"]
 
 # File names to be combined
 #==========================================================================================================================
-if taxon == 'Lepidoptera':
-    limit = 31
-elif taxon == 'Aves':
-    limit = 21
-else:
-    print("Will not go here...")
+# this block not needed anymore...since 'limit' is now passed as a param.
+# if taxon == 'Lepidoptera':
+#     limit = 31
+# elif taxon == 'Aves':
+#     limit = 21
+# else:
+#     print("Will not go here...")
 
 all_filenames = []
 i = 1
