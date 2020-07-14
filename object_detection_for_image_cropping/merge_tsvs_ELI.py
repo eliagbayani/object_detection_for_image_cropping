@@ -41,6 +41,20 @@ if taxon == 'Squamata':
                          "data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv"]
     else:
         all_filenames = ["data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv"]
+
+if taxon == 'Coleoptera':
+    if num == 5 or num == 7:
+        all_filenames = ["data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv",
+                         "data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_b.tsv"]
+    else:
+        all_filenames = ["data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv"]
+
+if taxon == 'Carnivora':
+    all_filenames = ["data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv"]
+    
+if taxon == 'Anura':
+    all_filenames = ["data_files/input/Multitaxa/"+taxon+"/collab/temp" + str(num) + "/"+taxon.lower()+"_det_crops_20000_a.tsv"]
+
 #=======================================================================================================================================================
 if taxon == 'Chiroptera':
     if num == 1:
@@ -126,7 +140,6 @@ if taxon == 'Lepidoptera':
     else:
         print("Will not go here...")
 #=======================================================================================================================================================
-
 
 # Combine all files in the list
 combined_csv = pd.concat([pd.read_csv(f, sep='\t', header=0) for f in all_filenames])
