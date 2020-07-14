@@ -22,8 +22,6 @@ import sys
 # python3 multitaxa_convert_bboxdims_ELI.py 2 Squamata
 # python3 multitaxa_convert_bboxdims_ELI.py 8 Squamata
 
-
-
 print ('Number of arguments:', len(sys.argv), 'arguments.')
 print ('Argument List:', str(sys.argv))
 params = sys.argv
