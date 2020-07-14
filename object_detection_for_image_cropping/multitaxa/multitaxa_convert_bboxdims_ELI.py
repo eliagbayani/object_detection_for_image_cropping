@@ -85,13 +85,13 @@ crops_unq.rename(columns={'image_url': 'eolMediaURL', 'class':'taxon'}, inplace=
 # tax4 = pathbase + 'images_for_Carnivora_20K_breakdown_000001.txt' #orig
 
 pathbase = '../data_files/input/Multitaxa/Squamata/editors_eol_org/' #Eli
-tax1 = pathbase + 'images_for_Squamata_20K_breakdown_000001.txt'
+tax1 = pathbase + 'images_for_Squamata_20K_breakdown_0000'+num_str+'.txt'
 pathbase = '../data_files/input/Multitaxa/Coleoptera/editors_eol_org/' #Eli
-tax2 = pathbase + 'images_for_Coleoptera_20K_breakdown_000001.txt'
+tax2 = pathbase + 'images_for_Coleoptera_20K_breakdown_0000'+num_str+'.txt'
 pathbase = '../data_files/input/Multitaxa/Anura/editors_eol_org/' #Eli
-tax3 = pathbase + 'images_for_Anura_20K_breakdown_000001.txt'
+tax3 = pathbase + 'images_for_Anura_20K_breakdown_0000'+num_str+'.txt'
 pathbase = '../data_files/input/Multitaxa/Carnivora/editors_eol_org/' #Eli
-tax4 = pathbase + 'images_for_Carnivora_20K_breakdown_000001.txt'
+tax4 = pathbase + 'images_for_Carnivora_20K_breakdown_0000'+num_str+'.txt'
 all_filenames = [tax1, tax2, tax3, tax4]
 bd = pd.concat([pd.read_csv(f, sep='\t', header=0) for f in all_filenames], ignore_index=True, sort=False)
 bd = bd.iloc[:, np.r_[0:2,-3]]
