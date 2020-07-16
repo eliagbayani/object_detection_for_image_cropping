@@ -84,17 +84,31 @@ crops_unq.rename(columns={'image_url': 'eolMediaURL', 'class':'taxon'}, inplace=
 # tax3 = pathbase + 'images_for_Anura_20K_breakdown_000001.txt' #orig
 # tax4 = pathbase + 'images_for_Carnivora_20K_breakdown_000001.txt' #orig
 
-pathbase = '../data_files/input/Multitaxa/Squamata/editors_eol_org/' #Eli
-tax1 = pathbase + 'images_for_Squamata_20K_breakdown_0000'+num_str+'.txt'
-pathbase = '../data_files/input/Multitaxa/Coleoptera/editors_eol_org/' #Eli
-tax2 = pathbase + 'images_for_Coleoptera_20K_breakdown_0000'+num_str+'.txt'
-pathbase = '../data_files/input/Multitaxa/Anura/editors_eol_org/' #Eli
-tax3 = pathbase + 'images_for_Anura_20K_breakdown_0000'+num_str+'.txt'
-pathbase = '../data_files/input/Multitaxa/Carnivora/editors_eol_org/' #Eli
-tax4 = pathbase + 'images_for_Carnivora_20K_breakdown_0000'+num_str+'.txt'
-all_filenames = [tax1, tax2, tax3, tax4]
+pathbase1 = '../data_files/input/Multitaxa/Squamata/editors_eol_org/' #Eli
+pathbase2 = '../data_files/input/Multitaxa/Coleoptera/editors_eol_org/' #Eli
+pathbase3 = '../data_files/input/Multitaxa/Anura/editors_eol_org/' #Eli
+pathbase4 = '../data_files/input/Multitaxa/Carnivora/editors_eol_org/' #Eli
+
+tax1 = pathbase1 + 'images_for_Squamata_20K_breakdown_0000'+num_str+'.txt'
+tax2 = pathbase2 + 'images_for_Coleoptera_20K_breakdown_0000'+num_str+'.txt'
+tax3 = pathbase3 + 'images_for_Anura_20K_breakdown_0000'+num_str+'.txt'
+tax4 = pathbase4 + 'images_for_Carnivora_20K_breakdown_0000'+num_str+'.txt'
+
+all_filenames = []
+if os.path.exists(tax1) :
+    all_filenames.append(tax1)
+if os.path.exists(tax2) :
+    all_filenames.append(tax2)
+if os.path.exists(tax3) :
+    all_filenames.append(tax3)
+if os.path.exists(tax4) :
+    all_filenames.append(tax4)
+
+#all_filenames = [tax1, tax2, tax3, tax4]
 bd = pd.concat([pd.read_csv(f, sep='\t', header=0) for f in all_filenames], ignore_index=True, sort=False)
-bd = bd.iloc[:, np.r_[0:2,-3]]
+# bd = bd.iloc[:, np.r_[0:2,-3]] #orig
+bd = bd.iloc[:, np.r_[0,1,-2]] #Eli - since I've regenerated the *_20K_breakdown_000001* files. The position of eolMediaURL might have changed.
+
 print(bd.head())
 
 ## Map dataObjectVersionIDs to crops_unq using identifiers as the index

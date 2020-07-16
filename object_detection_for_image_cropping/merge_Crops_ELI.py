@@ -19,6 +19,7 @@ eli = sys.argv
 # print('2nd arg:', eli[1])
 taxon = eli[1]
 limit = eli[2]
+limit = int(limit)
 print('Taxon is:', taxon)
 print('Limit count is:', limit)
 listOfNotMultiTaxa = ["Aves", "Chiroptera", "Lepidoptera"]
@@ -43,7 +44,7 @@ while i <= limit:
     if taxon in listOfNotMultiTaxa :
         all_filenames.append("data_files/output/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_20000img_" + num_str + ".tsv")
     else:
-        all_filenames.append("data_files/output/Multitaxa/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_20000img_" + num_str + ".tsv")
+        all_filenames.append("data_files/output/Multitaxa/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_i_20000img_" + num_str + ".tsv")
     i += 1
 print(all_filenames)
 #==========================================================================================================================
@@ -56,4 +57,4 @@ combined_csv = pd.concat([pd.read_csv(f, sep='\t', header=0) for f in all_filena
 if taxon in listOfNotMultiTaxa :
     combined_csv.to_csv( "data_files/output/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_img.tsv", index=False, sep='\t')
 else:
-    combined_csv.to_csv( "data_files/output/Multitaxa/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_img.tsv", index=False, sep='\t')
+    combined_csv.to_csv( "data_files/output/Multitaxa/"+taxon+"/crops/"+taxon.lower()+"_crops_rcnn_i_img.tsv", index=False, sep='\t')
